@@ -40,7 +40,6 @@ import { auth } from '@clerk/nextjs/server';
                         (error,result) => {
                             if(error) reject(error);
                             else resolve(result as CloudinaryUploadResult);
-
                         }
                     )
                     uploadStream.end(buffer) 

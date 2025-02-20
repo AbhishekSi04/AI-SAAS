@@ -3,7 +3,6 @@
 import React from 'react'
 import { CldImage } from 'next-cloudinary';
 import { useState,useEffect,useRef } from 'react';
-import { error } from 'console';
 
 const socialFormats = {
     "Instagram Square (1:1)": { width: 1080, height: 1080, aspectRatio: "1:1" },
@@ -55,7 +54,7 @@ const SocialShare = () => {
             setIsUploading(false);
         }
     }
-
+    
     const handleDownload = async () => {
         if (!imageRef.current) return;
     
