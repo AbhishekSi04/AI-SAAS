@@ -6,7 +6,7 @@ import { Video } from '@/types'
 function Home() {
     const [videos, setVideos] = useState<Video[]>([])
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
+    const [, setError] = useState<string | null>(null)
 
     const fetchVideos = useCallback(async () => {
         try {
@@ -31,18 +31,15 @@ function Home() {
     }, [fetchVideos])
 
     const handleDownload = useCallback((url: string, title: string) => {
-        () => {
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", `${title}.mp4`);
-            link.setAttribute("target", "_blank");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-        }
-
-    }, [])
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${title}.mp4`);
+      link.setAttribute("target", "_blank");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+  }, []);
+  
 
     if(loading){
         return <div>Loading...</div>

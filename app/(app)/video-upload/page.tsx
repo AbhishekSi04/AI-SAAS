@@ -1,7 +1,7 @@
 "use client"
 
-import React, { use } from 'react'
-import { useState, useEffect } from 'react'
+import React from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import axios from 'axios';
 
@@ -11,7 +11,7 @@ const VideoUpload = () => {
   const [description,setDescription] = useState("");
   const [isUploading, setIsUploading] = useState(false);
 
-  const router = useRouter();
+  // const router = useRouter();
   const MAX_FILE_SIZE = 70*1024*1024;
 
   const handleSubmit = async (e: React.FormEvent) => {

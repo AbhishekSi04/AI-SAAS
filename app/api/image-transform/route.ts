@@ -246,8 +246,6 @@
 
 
 
-
-
 import { NextResponse, NextRequest } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import { auth } from "@clerk/nextjs/server";
@@ -276,13 +274,9 @@ export async function POST(request: NextRequest) {
 
   try {
     const formData = await request.formData();
-    console.log("Received FormData:", Array.from(formData.entries())); // Debugging log
+    console.log("Received FormData:", Array.from(formData.entries()));
 
-    const fileOrPublicId = formData.get("file") || formData.get("publicId"); // Handle both cases
-
-    console.log("Received fileOrPublicId:", fileOrPublicId);
-    console.log("File Type:", typeof fileOrPublicId);
-    console.log("Is instance of File:", fileOrPublicId instanceof File);
+    const fileOrPublicId = formData.get("file") || formData.get("publicId");
 
     if (!fileOrPublicId) {
       console.log("❌ No valid file or public ID received!");
@@ -290,10 +284,10 @@ export async function POST(request: NextRequest) {
     }
 
     let publicId: string;
+    let secureUrl: string;
 
     if (fileOrPublicId instanceof File) {
-      console.log("✅ Received a file, uploading to Cloudinary...");
-
+      console.log("✅ Uploading file to Cloudinary...");
       const bytes = await fileOrPublicId.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
@@ -302,7 +296,7 @@ export async function POST(request: NextRequest) {
           {
             folder: "next-cloudinary-uploads",
             transformation: [
-              { effect: "background_removal:prompt_an old castle;seed_1" }, // 🚀 Remove background
+              { effect: "background_removal" }, // ✅ Correct transformation
               { fetch_format: "auto" },
               { quality: "auto" },
             ],
@@ -326,9 +320,11 @@ export async function POST(request: NextRequest) {
       });
 
       publicId = result.public_id;
+      secureUrl = result.secure_url;
     } else {
-      console.log("✅ Received a publicId instead of a file. Skipping upload...");
+      console.log("✅ Using existing Cloudinary publicId...");
       publicId = fileOrPublicId as string;
+      secureUrl = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${publicId}`;
     }
 
     // Construct the background removal transformation URL
@@ -336,15 +332,9 @@ export async function POST(request: NextRequest) {
       process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
     }/image/upload/e_gen_background_replace/${publicId}`;
 
-    const response = await fetch(transformedUrl);
-    console.log("response", response);
-    console.log("Cloudinary Response:", await response.text()); // Logs potential errors
-
-    console.log("✅ Background removal applied:", transformedUrl);
-
-    return NextResponse.json({ publicId, transformedUrl }, { status: 200 });
+    return NextResponse.json({ publicId, secureUrl, transformedUrl }, { status: 200 });
   } catch (error) {
-    console.error("❌ Upload failed:", error);
-    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+    console.error("❌ Error processing request:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
