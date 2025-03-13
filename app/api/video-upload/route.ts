@@ -12,7 +12,6 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET // Click 'View Credentials' below to copy your API secret
 });
-
 interface CloudinaryUploadResult {
     public_id: string;
     bytes: number;
