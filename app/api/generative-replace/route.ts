@@ -11,7 +11,7 @@ cloudinary.config({
 interface CloudinaryUploadResult {
   public_id: string;
   secure_url: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export async function POST(request: NextRequest) {
