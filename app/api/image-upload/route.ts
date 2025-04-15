@@ -1,6 +1,9 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
 import { auth } from '@clerk/nextjs/server';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient()
 
 // Cloudinary Configuration
 cloudinary.config({ 
@@ -50,6 +53,7 @@ export async function POST(request: NextRequest) {
             );
             uploadStream.end(buffer);
         });
+
 
         return NextResponse.json({ publicId: result.public_id, url: result.secure_url }, { status: 200 });
     } catch (error) {

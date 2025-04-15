@@ -11,13 +11,20 @@ import {
   Share2Icon,
   UploadIcon,
   ImageIcon,
+  ArrowLeftRight,
+  ImageMinus,
+  Fullscreen,
+  Replace
 } from "lucide-react";
 
 const sidebarItems = [
   { href: "/home", icon: LayoutDashboardIcon, label: "Home Page" },
-  { href: "/social-share", icon: Share2Icon, label: "Social Share" },
+  { href: "/social-share", icon: Share2Icon, label: "Image Resize" },
   { href: "/video-upload", icon: UploadIcon, label: "Video Upload" },
-  { href: "/image-transform", icon: ImageIcon, label: "Image Transform" },
+  { href: "/image-transform", icon: ArrowLeftRight, label: "Background Transform" },
+  { href: "/remove-background", icon: ImageMinus, label: "Remove Background" },
+  { href: "/image-extender", icon: Fullscreen, label: "Expand Images" },
+  { href: "/generative-replace", icon: Replace, label: "Generative Replace" },
 ];
 
 export default function AppLayout({
@@ -62,9 +69,10 @@ export default function AppLayout({
             </div>
             <div className="flex-1">
               <Link href="/" onClick={handleLogoClick}>
-                <div className="btn btn-ghost normal-case text-2xl font-bold tracking-tight cursor-pointer">
-                  Cloudinary Showcase
+                <div className="btn btn-ghost normal-case text-3xl font-bold tracking-tight cursor-pointer bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent font-[Pacifico]">
+                  MediaMorph
                 </div>
+
               </Link>
             </div>
             <div className="flex-none flex items-center space-x-4">
