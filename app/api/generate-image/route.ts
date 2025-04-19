@@ -17,11 +17,11 @@ export async function POST(req: NextRequest) {
     // Call the /infer endpoint with your prompt
     const result = await client.predict("/infer", {
       prompt,
-      seed: 0,
+      seed: 1056546105,
       randomize_seed: true,
-      width: 512,
-      height: 512,
-      num_inference_steps: 2,
+      width: 1024,
+      height: 1024,
+      num_inference_steps: 4,
     });
 
     // result.data is an array, with result[0] as the image object
