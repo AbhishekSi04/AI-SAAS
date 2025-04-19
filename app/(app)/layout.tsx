@@ -21,6 +21,7 @@ const sidebarItems = [
   { href: "/home", icon: LayoutDashboardIcon, label: "Home Page" },
   { href: "/social-share", icon: Share2Icon, label: "Image Resize" },
   { href: "/video-upload", icon: UploadIcon, label: "Video Upload" },
+  { href: "/generate-image", icon: Replace, label: "Generate Image" },
   { href: "/image-transform", icon: ArrowLeftRight, label: "Background Transform" },
   { href: "/remove-background", icon: ImageMinus, label: "Remove Background" },
   { href: "/image-extender", icon: Fullscreen, label: "Expand Images" },
