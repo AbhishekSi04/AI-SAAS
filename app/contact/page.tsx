@@ -24,7 +24,7 @@ export default function ContactPage() {
         <main className="flex-1 flex items-center justify-center flex-col text-center">
           <div className="bg-white/10 backdrop-blur-md p-10 rounded-3xl shadow-2xl border border-white/40 max-w-lg w-full mb-6">
             <h1 className="text-3xl font-extrabold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-2">Contact Us</h1>
-            <p className="text-center text-gray-300 mb-8">We'd love to hear from you! Fill out the form below and we'll get back to you soon.</p>
+            <p className="text-center text-gray-300 mb-8">We would love to hear from you! Fill out the form below and we will get back to you soon.</p>
             <form className="flex flex-col gap-5">
               <input
                 type="text"
