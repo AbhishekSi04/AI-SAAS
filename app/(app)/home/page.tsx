@@ -7,7 +7,7 @@ function Home() {
     const [videos, setVideos] = useState<Video[]>([])
     const [loading, setLoading] = useState(true)
     const [, setError] = useState<string | null>(null);
-    const [user,setUser] = useState(null);
+    // const [user,setUser] = useState(null);
 
     const fetchVideos = useCallback(async () => {
         try {

@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Add credits to user
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     await UserService.addCredits({
       userId: user.id,
       amount: credits,

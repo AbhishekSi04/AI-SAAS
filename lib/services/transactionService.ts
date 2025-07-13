@@ -8,7 +8,7 @@ export interface CreateTransactionData {
   type: 'CREDIT_PURCHASE' | 'SUBSCRIPTION' | 'REFUND';
   description: string;
   stripePaymentIntentId?: string;
-  metadata?: any;
+  metadata?: object;
 }
 
 export class TransactionService {

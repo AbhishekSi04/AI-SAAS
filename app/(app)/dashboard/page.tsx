@@ -6,12 +6,10 @@ import {
   CreditCard, 
   Image, 
   Video, 
-  History, 
   DollarSign,
   User,
-  Calendar,
-  TrendingUp
 } from 'lucide-react';
+import { Video as VideoType, Image as ImageType, CreditLog } from '@/types';
 
 interface DashboardData {
   user: {
@@ -32,9 +30,9 @@ interface DashboardData {
     pendingTransactions: number;
   };
   recentActivity: {
-    videos: any[];
-    images: any[];
-    creditLogs: any[];
+    videos: VideoType[];
+    images: ImageType[];
+    creditLogs: CreditLog[];
   };
 }
 

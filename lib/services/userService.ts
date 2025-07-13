@@ -1,5 +1,5 @@
 import { prisma } from '../db';
-import { User, CreditLog, Transaction } from '@prisma/client';
+import { User, CreditLog } from '@prisma/client';
 
 export interface CreateUserData {
   clerkId: string;
@@ -14,7 +14,7 @@ export interface CreditOperation {
   amount: number;
   type: 'PURCHASE' | 'USAGE' ;
   description: string;
-  metadata?: any;
+  metadata?: object;
 }
 
 export class UserService {

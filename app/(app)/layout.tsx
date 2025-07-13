@@ -18,7 +18,7 @@ import {
   CreditCard,
   User
 } from "lucide-react";
-
+import { DatabaseUser } from "@/types";
 
 const sidebarItems = [
   { href: "/dashboard", icon: User, label: "Dashboard" },
@@ -39,7 +39,7 @@ export default function AppLayout({
   children: React.ReactNode;
 }>) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [newUser, setFullUser] = useState<any>(null);
+  const [newUser, setFullUser] = useState<DatabaseUser | null>(null);
   const pathname = usePathname();
   const router = useRouter();
   const { signOut } = useClerk();
@@ -48,6 +48,7 @@ export default function AppLayout({
   // Create user in database when they sign in
   useEffect(() => {
     console.log('useEffect triggered, user:', user, 'isLoaded:', isLoaded);
+    console.log(newUser);
     
     const createUserInDB = async () => {
       if (isLoaded && user) {

@@ -94,7 +94,8 @@ export async function POST(request: NextRequest) {
         });
 
         // Deduct credits after successful upload
-        await UserService.useCredits({
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+    await UserService.useCredits({
             userId: user.id,
             amount: 2,
             type: 'USAGE',

@@ -3,10 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { CreditCard, ShoppingCart, Gift, Zap } from 'lucide-react';
+import { CreditLog } from '@/types';
 
 interface CreditData {
   credits: number;
-  creditHistory: any[];
+  creditHistory: CreditLog[];
 }
 
 export default function CreditsPage() {
@@ -62,6 +63,7 @@ export default function CreditsPage() {
       
       const data = await res.json();
       if (data.url) {
+        console.log(message);
         window.location.href = data.url;
       } else {
         alert('Payment failed: ' + (data.error || 'Unknown error'));
