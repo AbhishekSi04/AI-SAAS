@@ -1,6 +1,8 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
 import { auth } from '@clerk/nextjs/server';
+import { ensureUserExists } from '@/lib/middleware/userMiddleware';
+import { UserService } from '@/lib/services/userService';
 
 
 // Cloudinary Configuration
@@ -23,6 +25,23 @@ export async function POST(request: NextRequest) {
     if (!userId) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    // Ensure user exists in our database
+    const user = await ensureUserExists();
+    if (!user) {
+        return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Check if user has enough credits (1 credit per upload)
+    const hasEnoughCredits = await UserService.hasEnoughCredits(user.id, 1);
+    if (!hasEnoughCredits) {
+        return NextResponse.json({ 
+            error: "Insufficient credits", 
+            credits: user.credits,
+            required: 1 
+        }, { status: 402 });
+    }
+
     try {
         const formData = await request.formData();
         const file = formData.get("file") as File | null;
@@ -52,8 +71,23 @@ export async function POST(request: NextRequest) {
             uploadStream.end(buffer);
         });
 
+        // Deduct credits after successful upload
+        await UserService.useCredits({
+            userId: user.id,
+            amount: 1,
+            type: 'USAGE',
+            description: 'Image upload and transformation',
+            metadata: {
+                publicId: result.public_id,
+                operation: 'upload'
+            }
+        });
 
-        return NextResponse.json({ publicId: result.public_id, url: result.secure_url }, { status: 200 });
+        return NextResponse.json({ 
+            publicId: result.public_id, 
+            url: result.secure_url,
+            creditsRemaining: user.credits - 1
+        }, { status: 200 });
     } catch (error) {
         console.error("Upload image failed", error);
         return NextResponse.json({ error: "Upload image failed" }, { status: 500 });

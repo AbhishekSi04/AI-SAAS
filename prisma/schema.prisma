@@ -13,25 +13,134 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// create model
+// User model - linked to Clerk
+model User {
+  id            String   @id @default(cuid())
+  clerkId       String   @unique // Clerk user ID
+  email         String   @unique
+  firstName     String?
+  lastName      String?
+  avatar        String?
+  credits       Int      @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
+  // Relations
+  videos        Video[]
+  images        Image[]
+  transactions  Transaction[]
+  creditLogs    CreditLog[]
+
+  @@map("users")
+}
+
+// Credit system
+model CreditLog {
+  id          String   @id @default(cuid())
+  userId      String
+  amount      Int      // positive for credits added, negative for credits used
+  type        CreditLogType
+  description String
+  metadata    Json?    // for additional data like operation details
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("credit_logs")
+}
+
+// Transaction tracking
+model Transaction {
+  id            String   @id @default(cuid())
+  userId        String
+  amount        Int      // in cents
+  currency      String   @default("USD")
+  status        TransactionStatus @default(PENDING)
+  type          TransactionType
+  description   String
+  stripePaymentIntentId String?
+  metadata      Json?    // for additional transaction data
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
+}
+
+// Updated Video model with user relationship
 model Video {
   id             String   @id @default(cuid())
+  userId         String   // Link to user
   title          String
   description    String?
   publicId       String
   originalSize   String
   compressedSize String
   duration       Float
+  status         VideoStatus @default(PROCESSING)
+  metadata       Json?    // for additional video data
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  // Relations
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("videos")
 }
 
-
+// Updated Image model with user relationship
 model Image {
   id         String   @id @default(cuid())
+  userId     String   // Link to user
   publicId   String
   secureUrl  String
+  title      String?
+  description String?
+  type       ImageType @default(GENERATED)
+  metadata   Json?    // for additional image data
   createdAt  DateTime @default(now())
-  userId     String   // optional: for Clerk auth integration
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("images")
+}
+
+// Enums
+enum CreditLogType {
+  PURCHASE
+  USAGE
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum TransactionType {
+  CREDIT_PURCHASE
+  SUBSCRIPTION
+  REFUND
+}
+
+enum VideoStatus {
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum ImageType {
+  UPLOADED
+  GENERATED
+  TRANSFORMED
+  BACKGROUND_REMOVED
+  EXTENDED
 }

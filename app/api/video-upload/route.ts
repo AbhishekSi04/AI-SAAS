@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
 import { auth } from '@clerk/nextjs/server';
-import { PrismaClient } from '@prisma/client';
-
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/db';
+import { UserService } from '@/lib/services/userService';
 
 // Configuration
 cloudinary.config({
@@ -20,12 +18,26 @@ interface CloudinaryUploadResult {
 }
 
 export async function POST(request: NextRequest) {
-
-
     try {
-        const {userId} =await auth()
-        if(!userId){
-            return NextResponse.json({error:"unauthorized"},{status:401});
+        const { userId } = await auth();
+        if (!userId) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        // Get user from database
+        const user = await UserService.getUserByClerkId(userId);
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+
+        // Check if user has enough credits (2 credits for video upload)
+        const hasEnoughCredits = await UserService.hasEnoughCredits(user.id, 2);
+        if (!hasEnoughCredits) {
+            return NextResponse.json({ 
+                error: "Insufficient credits", 
+                credits: user.credits,
+                required: 2 
+            }, { status: 402 });
         }
 
     if(
@@ -70,20 +82,37 @@ export async function POST(request: NextRequest) {
         )
         const video = await prisma.video.create({
             data: {
+                userId: user.id,
                 title,
                 description,
                 publicId: result.public_id,
                 originalSize: originalSize,
                 compressedSize: String(result.bytes),
                 duration: result.duration || 0,
+                status: 'COMPLETED'
             }
-        })
-        return NextResponse.json(video)
+        });
 
-    } catch (error) {
+        // Deduct credits after successful upload
+        await UserService.useCredits({
+            userId: user.id,
+            amount: 2,
+            type: 'USAGE',
+            description: 'Video upload and processing',
+            metadata: {
+                videoId: video.id,
+                publicId: result.public_id,
+                operation: 'video_upload'
+            }
+        });
+
+        return NextResponse.json({
+            ...video,
+            creditsRemaining: user.credits - 2
+        });
+
+        } catch (error) {
         console.log("UPload video failed", error)
         return NextResponse.json({error: "UPload video failed"}, {status: 500})
-    } finally{
-        await prisma.$disconnect()
     }
 }

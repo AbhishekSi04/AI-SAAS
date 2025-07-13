@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { UserProvider } from "@/lib/providers/UserProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,7 +44,9 @@ export default function RootLayout({
           <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 w-[600px] h-[300px] bg-blue-600 opacity-20 rounded-full filter blur-[200px] z-0" />
           {/* Main Content Container */}
           <div className="relative z-10 w-full mx-auto flex flex-col min-h-screen ">
-            {children}
+            <UserProvider>
+              {children}
+            </UserProvider>
           </div>
         </body>
       </html>

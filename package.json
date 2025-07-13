@@ -18,6 +18,7 @@
     "cloudinary": "^2.5.1",
     "dayjs": "^1.11.13",
     "dayjs-ext": "^2.2.0",
+    "dotenv": "^17.2.0",
     "filesize": "^10.1.6",
     "filesize.js": "^2.0.0",
     "lucide-react": "^0.475.0",
