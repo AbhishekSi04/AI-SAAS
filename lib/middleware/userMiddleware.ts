@@ -1,10 +1,16 @@
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { UserService } from '../services/userService';
 
 export async function ensureUserExists() {
-  const { userId, user } = await auth();
+  const { userId } = await auth();
   
-  if (!userId || !user) {
+  if (!userId) {
+    return null;
+  }
+
+  // Fetch the user object from Clerk
+  const user = await currentUser();
+  if (!user) {
     return null;
   }
 
