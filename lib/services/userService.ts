@@ -65,11 +65,12 @@ export class UserService {
         }
       });
       
+
       console.log('New user created:', newUser.id);
       return newUser;
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle race condition - another request might have created the user
-      if (error.code === 'P2002') {
+      if (error instanceof Error && error.message === 'P2002') {
         console.log('Race condition detected, fetching existing user...');
         const raceUser = await prisma.user.findFirst({
           where: {
