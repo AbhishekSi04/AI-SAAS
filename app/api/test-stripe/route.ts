@@ -64,7 +64,7 @@ export async function GET() {
       envVars: {
         STRIPE_SECRET_KEY: !!process.env.STRIPE_SECRET_KEY,
         STRIPE_SECRET_KEY_PREFIX: process.env.STRIPE_SECRET_KEY?.substring(0, 7),
-        NEXT_PUBLIC_APP_URL: !!process.env.NEXT_PUBLIC_APP_URL,
+        NEXT_PUBLIC_BASE_URL: !!process.env.NEXT_PUBLIC_BASE_URL,
       },
       testResults: {
         productCreation: !!testProduct,
