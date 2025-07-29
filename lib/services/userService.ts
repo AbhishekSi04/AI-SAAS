@@ -176,7 +176,7 @@ export class UserService {
           orderBy: { createdAt: 'desc' }
         },
         images: {
-          take: 5,
+          // take: 5,
           orderBy: { createdAt: 'desc' }
         },
         creditLogs: {

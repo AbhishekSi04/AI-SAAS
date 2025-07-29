@@ -33,7 +33,19 @@ export async function POST() {
       }
     });
   } catch (error) {
-    console.error('Error creating user:', error);
-    return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
+    // Handle null/undefined errors properly
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    const errorStack = error instanceof Error ? error.stack : 'No stack trace available';
+    
+    console.error('Error creating user:', {
+      message: errorMessage,
+      stack: errorStack,
+      error: error || 'Error was null or undefined'
+    });
+    
+    return NextResponse.json({ 
+      error: "Failed to create user",
+      details: errorMessage 
+    }, { status: 500 });
   }
 } 

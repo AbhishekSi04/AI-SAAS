@@ -3,6 +3,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { auth } from '@clerk/nextjs/server';
 import { ensureUserExists } from '@/lib/middleware/userMiddleware';
 import { UserService } from '@/lib/services/userService';
+import { prisma } from '@/lib/db';
 
 
 // Cloudinary Configuration
@@ -71,6 +72,25 @@ export async function POST(request: NextRequest) {
             uploadStream.end(buffer);
         });
 
+            // Save image to database
+            const image = await prisma.image.create({
+                data: {
+                userId: user.id,
+                publicId: result.public_id,
+                secureUrl: result.secure_url,
+                title: `Uploaded Image`,
+                type: 'UPLOADED',
+                metadata: {
+                    operation: 'upload',
+                    transformation: 'auto-format, auto-quality, crop:auto, 500x500',
+                    width: 500,
+                    height: 500,
+                    originalUrl: result.secure_url
+                }
+                }
+            });
+  
+
         // Deduct credits after successful upload
         // eslint-disable-next-line react-hooks/rules-of-hooks
     await UserService.useCredits({
@@ -79,6 +99,7 @@ export async function POST(request: NextRequest) {
             type: 'USAGE',
             description: 'Image upload and transformation',
             metadata: {
+                imageId: image.id,
                 publicId: result.public_id,
                 operation: 'upload'
             }
@@ -87,6 +108,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ 
             publicId: result.public_id, 
             url: result.secure_url,
+            imageId: image.id,
             creditsRemaining: user.credits - 1
         }, { status: 200 });
     } catch (error) {

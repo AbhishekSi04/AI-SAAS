@@ -50,21 +50,76 @@ export async function POST(request: NextRequest) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
 
+    // Upload original image first
     const uploadResult = await new Promise<CloudinaryUploadResult>((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        reject(new Error('Upload timeout after 30 seconds'));
+      }, 30000); // 30 second timeout
+
       const uploadStream = cloudinary.uploader.upload_stream(
-        { folder: "replace-objects" },
+        { 
+          folder: "replace-objects",
+          resource_type: "image",
+          timeout: 30000
+        },
         (error, result) => {
-          if (error) reject(new Error(error.message));
-          else resolve(result as CloudinaryUploadResult);
+          clearTimeout(timeout);
+          if (error) {
+            console.error('Cloudinary upload error:', error);
+            reject(new Error(`Upload failed: ${error.message}`));
+          } else {
+            resolve(result as CloudinaryUploadResult);
+          }
         }
       );
       uploadStream.end(buffer);
     });
 
     const publicId = uploadResult.public_id;
+    console.log('Image uploaded successfully:', publicId);
 
-    const encodedEffect = encodeURIComponent(`from_${from};to_${to}`);
-    const transformedUrl = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/e_gen_replace:${encodedEffect}/${publicId}.png`;
+    // Create the generative replace transformation
+    let transformedUrl: string;
+    
+    try {
+      // Use Cloudinary's explicit API to apply the transformation
+      const transformResult = await new Promise<any>((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(new Error('Transformation timeout after 60 seconds'));
+        }, 60000); // 60 second timeout for transformation
+
+        cloudinary.uploader.explicit(
+          publicId,
+          {
+            type: 'upload',
+            eager: [{
+              transformation: `e_gen_replace:from_${encodeURIComponent(from)};to_${encodeURIComponent(to)}`
+            }],
+            eager_async: false, // Wait for transformation to complete
+            timeout: 60000
+          },
+          (error, result) => {
+            clearTimeout(timeout);
+            if (error) {
+              console.error('Cloudinary transformation error:', error);
+              reject(new Error(`Transformation failed: ${error.message}`));
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+
+      // Get the transformed URL from the eager transformation
+      transformedUrl = (transformResult.eager && transformResult.eager[0] && transformResult.eager[0].secure_url) || 
+        `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/e_gen_replace:from_${encodeURIComponent(from)};to_${encodeURIComponent(to)}/${publicId}.png`;
+      
+      console.log('Transformation completed:', transformedUrl);
+    } catch (transformError) {
+      console.error('Transformation failed:', transformError);
+      // Fallback to direct URL generation (may not be processed yet)
+      transformedUrl = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/e_gen_replace:from_${encodeURIComponent(from)};to_${encodeURIComponent(to)}/${publicId}.png`;
+    }
 
     // Save image to database
     const image = await prisma.image.create({

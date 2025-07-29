@@ -76,7 +76,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     const creditsAmount = parseInt(credits);
     
     // Add credits to user
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+     
     await UserService.addCredits({
       userId: user.id,
       amount: creditsAmount,

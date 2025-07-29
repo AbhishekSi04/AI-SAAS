@@ -7,30 +7,30 @@ import { useClerk, useUser } from "@clerk/nextjs";
 import {
   LogOutIcon,
   MenuIcon,
-  LayoutDashboardIcon,
   Share2Icon,
   UploadIcon,
-  ImageIcon,
   ArrowLeftRight,
   ImageMinus,
   Fullscreen,
   Replace,
   CreditCard,
-  User
+  User,
+  X,
+  Zap,
 } from "lucide-react";
 import { DatabaseUser } from "@/types";
+import { Button } from "@/components/ui/button";
 
 const sidebarItems = [
-  { href: "/dashboard", icon: User, label: "Dashboard" },
-  { href: "/credits", icon: CreditCard, label: "Credits" },
-  { href: "/home", icon: LayoutDashboardIcon, label: "Home Page" },
-  { href: "/social-share", icon: Share2Icon, label: "Image Resize" },
-  { href: "/video-upload", icon: UploadIcon, label: "Video Upload" },
-  { href: "/generate-image", icon: Replace, label: "Generate Image" },
-  { href: "/image-transform", icon: ArrowLeftRight, label: "Background Transform" },
-  { href: "/remove-background", icon: ImageMinus, label: "Remove Background" },
-  { href: "/image-extender", icon: Fullscreen, label: "Expand Images" },
-  { href: "/generative-replace", icon: Replace, label: "Generative Replace" },
+  { href: "/dashboard", icon: User, label: "Dashboard", color: "#4F46E5" },
+  { href: "/credits", icon: CreditCard, label: "Credits", color: "#0EA5E9" },
+  { href: "/social-share", icon: Share2Icon, label: "Image Resize", color: "#F59E0B" },
+  { href: "/video-upload", icon: UploadIcon, label: "Video Upload", color: "#A855F7" },
+  { href: "/generate-image", icon: Replace, label: "Generate Image", color: "#EF4444" },
+  { href: "/image-transform", icon: ArrowLeftRight, label: "Background Transform", color: "#14B8A6" },
+  { href: "/remove-background", icon: ImageMinus, label: "Remove Background", color: "#6366F1" },
+  { href: "/image-extender", icon: Fullscreen, label: "Expand Images", color: "#EC4899" },
+  { href: "/generative-replace", icon: Replace, label: "Generative Replace", color: "#8B5CF6" },
 ];
 
 export default function AppLayout({
@@ -88,147 +88,234 @@ export default function AppLayout({
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="min-h-screen bg-gradient-dark text-white flex">
       {/* Fixed Sidebar */}
-      <div className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 lg:z-50">
-        <div className="flex flex-col flex-grow bg-base-200 border-r border-base-300">
-          <div className="flex items-center justify-center py-4">
-            <ImageIcon className="w-10 h-10 text-primary" />
+      <div className="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 lg:z-50">
+      <div className="flex flex-col flex-grow bg-[#18181b] border-r border-white/10 overflow-y-auto max-h-screen">
+
+          {/* Sidebar Header */}
+          <div className="flex items-center justify-center py-6 border-b border-white/10">
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
+                <Zap className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#36c6f0] to-[#8f6ed5]">AI Media Toolkit</span>
+            </div>
           </div>
-          <ul className="menu p-4 w-full text-base-content flex-grow">
+          
+          {/* Navigation Items */}
+          <nav className="flex-1 p-4 space-y-2">
             {sidebarItems.map((item) => (
-              <li key={item.href} className="mb-2">
-                <Link
-                  href={item.href}
-                  className={`flex items-center space-x-4 px-4 py-2 rounded-lg ${
-                    pathname === item.href
-                      ? "bg-primary text-white"
-                      : "hover:bg-base-300"
-                  }`}
-                >
-                  <item.icon className="w-6 h-6" />
-                  <span>{item.label}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-          {user && (
-            <div className="p-4">
-              <button
-                onClick={handleSignOut}
-                className="btn btn-outline btn-error w-full"
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-3 px-4 py-1 rounded-xl transition-all duration-200 group ${
+                  pathname === item.href
+                    ? "bg-gradient-to-r from-[#36c6f0]/20 to-[#8f6ed5]/20 border border-[#36c6f0]/30 text-white shadow-lg"
+                    : "hover:bg-white/5 text-gray-300 hover:text-white"
+                }`}
               >
-                <LogOutIcon className="mr-2 h-5 w-5" />
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                  pathname === item.href ? "bg-gradient-primary" : "bg-white/10 group-hover:bg-white/20"
+                }`}>
+                  <item.icon 
+                    className="w-5 h-5" 
+                    color={pathname === item.href ? "white" : item.color}
+                  />
+                </div>
+                <span className="font-medium">{item.label}</span>
+              </Link>
+            ))}
+          </nav>
+          
+          {/* User Section */}
+          {user && (
+            <div className="p-4 border-t border-white/10">
+              <div className="flex items-center gap-3 mb-4 p-3 bg-white/5 rounded-xl">
+                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#36c6f0]/50">
+                  <img
+                    src={user.imageUrl}
+                    alt={user.username || user.emailAddresses[0].emailAddress}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-white truncate">
+                    {user.username || user.firstName || "User"}
+                  </p>
+                  <p className="text-xs text-gray-400 truncate">
+                    {user.emailAddresses[0].emailAddress}
+                  </p>
+                </div>
+              </div>
+              <Button
+                onClick={handleSignOut}
+                className="w-full bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-600/30 hover:border-red-600/50 transition-all duration-200"
+              >
+                <LogOutIcon className="mr-2 h-4 w-4" />
                 Sign Out
-              </button>
+              </Button>
             </div>
           )}
         </div>
       </div>
 
-      {/* Mobile Drawer */}
-      <div className="lg:hidden">
-        <input
-          id="sidebar-drawer"
-          type="checkbox"
-          className="drawer-toggle"
-          checked={sidebarOpen}
-          onChange={() => setSidebarOpen(!sidebarOpen)}
-        />
-        <div className="drawer-side">
-          <label htmlFor="sidebar-drawer" className="drawer-overlay"></label>
-          <aside className="bg-base-200 w-64 h-full flex flex-col">
-            <div className="flex items-center justify-center py-4">
-              <ImageIcon className="w-10 h-10 text-primary" />
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div className="lg:hidden fixed inset-0 z-50 flex">
+          <div className="fixed inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
+          <div className="relative flex flex-col w-72 bg-[#18181b] border-r border-white/10 max-h-screen overflow-y-auto">
+
+            {/* Mobile Sidebar Header */}
+            <div className="flex items-center justify-between p-4 border-b border-white/10">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                  <Zap className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#36c6f0] to-[#8f6ed5]">MediaMorph</span>
+              </div>
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5 text-gray-400" />
+              </button>
             </div>
-            <ul className="menu p-4 w-full text-base-content flex-grow">
+            
+            {/* Mobile Navigation */}
+            <nav className="flex-1 p-4 space-y-2">
               {sidebarItems.map((item) => (
-                <li key={item.href} className="mb-2">
-                  <Link
-                    href={item.href}
-                    className={`flex items-center space-x-4 px-4 py-2 rounded-lg ${
-                      pathname === item.href
-                        ? "bg-primary text-white"
-                        : "hover:bg-base-300"
-                    }`}
-                    onClick={() => setSidebarOpen(false)}
-                  >
-                    <item.icon className="w-6 h-6" />
-                    <span>{item.label}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            {user && (
-              <div className="p-4">
-                <button
-                  onClick={handleSignOut}
-                  className="btn btn-outline btn-error w-full"
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setSidebarOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+                    pathname === item.href
+                      ? "bg-gradient-to-r from-[#36c6f0]/20 to-[#8f6ed5]/20 border border-[#36c6f0]/30 text-white shadow-lg"
+                      : "hover:bg-white/5 text-gray-300 hover:text-white"
+                  }`}
                 >
-                  <LogOutIcon className="mr-2 h-5 w-5" />
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                    pathname === item.href ? "bg-gradient-primary" : "bg-white/10 group-hover:bg-white/20"
+                  }`}>
+                    <item.icon 
+                      className="w-5 h-5" 
+                      color={pathname === item.href ? "white" : item.color}
+                    />
+                  </div>
+                  <span className="font-medium">{item.label}</span>
+                </Link>
+              ))}
+            </nav>
+            
+            {/* Mobile User Section */}
+            {user && (
+              <div className="p-4 border-t border-white/10">
+                <div className="flex items-center gap-3 mb-4 p-3 bg-white/5 rounded-xl">
+                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#36c6f0]/50">
+                    <img
+                      src={user.imageUrl}
+                      alt={user.username || user.emailAddresses[0].emailAddress}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-white truncate">
+                      {user.username || user.firstName || "User"}
+                    </p>
+                    <p className="text-xs text-gray-400 truncate">
+                      {user.emailAddresses[0].emailAddress}
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  onClick={handleSignOut}
+                  className="w-full bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-600/30 hover:border-red-600/50 transition-all duration-200"
+                >
+                  <LogOutIcon className="mr-2 h-4 w-4" />
                   Sign Out
-                </button>
+                </Button>
               </div>
             )}
-          </aside>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-64">
-        <div className="flex flex-col h-full">
-          {/* Navbar */}
-          <header className="w-full bg-base-200 border-b border-base-300">
-            <div className="navbar max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex-none lg:hidden">
-                <label
-                  htmlFor="sidebar-drawer"
-                  className="btn btn-square btn-ghost drawer-button"
+      <div className="flex-1 lg:ml-72">
+        <div className="flex flex-col min-h-screen">
+          {/* Header */}
+          <header className="w-full bg-black/80 border-b border-white/10 shadow-lg">
+            <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+              <div className="flex items-center gap-4">
+                <button 
+                  className="lg:hidden p-2 hover:bg-white/10 rounded-lg transition-colors"
+                  onClick={() => setSidebarOpen(true)}
                 >
-                  <MenuIcon />
-                </label>
+                  <MenuIcon className="w-6 h-6 text-white" />
+                </button>
+                <div 
+                  className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#36c6f0] to-[#8f6ed5] drop-shadow-glow cursor-pointer select-none"
+                  onClick={()=> router.push('/dashboard')}
+                >
+                  MediaMorph
+                </div>
               </div>
-              <div className="flex-1">
-                <Link href="/" onClick={handleLogoClick}>
-                  <div className="btn btn-ghost normal-case text-3xl font-bold tracking-tight cursor-pointer bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent font-[Pacifico]">
-                    MediaMorph
-                  </div>
-                </Link>
-              </div>
-              <div className="flex-none flex items-center space-x-4">
+              
+              <div className="flex items-center gap-4">
                 {user && (
                   <>
-                    <div className="avatar">
-                      <div className="w-8 h-8 rounded-full">
+                    <div className="hidden md:flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-[#36c6f0]/50">
                         <img
                           src={user.imageUrl}
-                          alt={
-                            user.username || user.emailAddresses[0].emailAddress
-                          }
+                          alt={user.username || user.emailAddresses[0].emailAddress}
+                          className="w-full h-full object-cover"
                         />
                       </div>
+                      <span className="text-sm font-medium text-white truncate max-w-xs">
+                        {user.username || user.firstName || "User"}
+                      </span>
                     </div>
-                    <span className="text-sm truncate max-w-xs lg:max-w-md">
-                      {user.username || user.emailAddresses[0].emailAddress}
-                    </span>
-                    <button
+                    <Button
                       onClick={handleSignOut}
-                      className="btn btn-ghost btn-circle"
+                      className="bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-600/30 hover:border-red-600/50 transition-all duration-200"
+                      size="sm"
                     >
-                      <LogOutIcon className="h-6 w-6" />
-                    </button>
+                      <LogOutIcon className="w-4 h-4" />
+                    </Button>
                   </>
                 )}
               </div>
             </div>
           </header>
           
-          {/* Page content */}
-          <main className="flex-grow overflow-auto">
-            <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 my-8">
+          {/* Page Content */}
+          <main className="flex-1 bg-gradient-dark">
+            <div className="max-w-7xl mx-auto w-full px-6 py-8">
               {children}
             </div>
           </main>
+          
+          {/* Footer */}
+          {/* <footer className="bg-[#18181b] border-t border-white/10">
+            <div className="max-w-7xl mx-auto px-6 py-8">
+              <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-300">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 bg-gradient-primary rounded-lg flex items-center justify-center">
+                    <Zap className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#36c6f0] to-[#8f6ed5]">MediaMorph</span>
+                  <span> 2024 All rights reserved.</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span>Made with</span>
+                  <Heart className="w-4 h-4 text-red-600" />
+                  <span>for creators</span>
+                </div>
+              </div>
+            </div>
+          </footer> */}
         </div>
       </div>
     </div>
