@@ -83,9 +83,9 @@ export default function CreditsPage() {
     }
   }, [user]);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
-  };
+  // const formatDate = (dateString: string) => {
+  //   return new Date(dateString).toLocaleDateString();
+  // };
 
   const creditPackages = [
     {

@@ -43,6 +43,7 @@ export default function ImageGeneratorPage() {
       
       clearInterval(progressInterval);
       setGenerationProgress(100);
+      console.log(data.imageUrl);
       setImageUrl(data.imageUrl);
       setGenerationSuccess(true);
       
