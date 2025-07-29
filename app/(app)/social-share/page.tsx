@@ -3,7 +3,7 @@
 import React from 'react'
 import { CldImage } from 'next-cloudinary';
 import { useState, useEffect, useRef } from 'react';
-import { Upload, Download, Image as ImageIcon, Sparkles, Instagram, Twitter, Facebook } from 'lucide-react';
+import { Upload, Download, Image as ImageIcon, Instagram, Twitter, Facebook } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const socialFormats = {

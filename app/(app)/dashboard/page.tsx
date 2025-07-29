@@ -6,9 +6,7 @@ import {
   CreditCard, 
   Image, 
   Video, 
-  DollarSign,
   User,
-  Sparkles,
   Wallet,
   TrendingUp,
   Activity,
@@ -17,7 +15,6 @@ import {
   Zap
 } from 'lucide-react';
 import { Video as VideoType, Image as ImageType, CreditLog } from '@/types';
-import { Button } from '@/components/ui/button';
 
 interface DashboardData {
   user: {

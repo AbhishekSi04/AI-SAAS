@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Menu, X, Sparkles, Zap, Shield, CreditCard, Upload, Video, ImageIcon, Scissors, Wand2, RotateCcw, Expand, PlayCircle, Star, Crown, Check, Heart } from "lucide-react";
+import { ArrowRight, Menu, X, Sparkles, Zap, Shield, CreditCard, Upload, Video, ImageIcon, Scissors, Wand2, RotateCcw, Expand, PlayCircle, Star, Crown, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const features = [
@@ -298,7 +298,7 @@ export default function Home() {
                   <li key={idx} className="flex items-center gap-3"><Check className="w-5 h-5 text-green-400 shrink-0" /> <span className="text-sm text-white">{f}</span></li>
                 ))} */}
               </ul>
-              <Button onClick={()=>router.push('/sign-up')} variant={plan.variant as any} size="lg" className="w-full font-bold bg-gradient-to-r from-[#36c6f0] to-[#8f6ed5] hover:from-[#2bb3e6] hover:to-[#7a5fc2] text-white border-none shadow-md">
+              <Button onClick={()=>router.push('/sign-up')}  size="lg" className="w-full font-bold bg-gradient-to-r from-[#36c6f0] to-[#8f6ed5] hover:from-[#2bb3e6] hover:to-[#7a5fc2] text-white border-none shadow-md">
                 {plan.price === "Custom" ? "Contact Sales" : "Get Started"}
               </Button>
             </div>
@@ -325,7 +325,7 @@ export default function Home() {
           ))}
         </div>
         <div className="text-center mt-16">
-          <p className="text-gray-300 mb-6">Still have questions? We're here to help!</p>
+          <p className="text-gray-300 mb-6">Still have questions? We are here to help!</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button className="px-6 font-bold bg-[#22c55e] hover:bg-[#16a34a] text-white border-none shadow-md" onClick={()=>(router.push('/contact'))}>
               Contact Support

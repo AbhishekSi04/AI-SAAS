@@ -83,6 +83,7 @@ export async function POST(request: NextRequest) {
     
     try {
       // Use Cloudinary's explicit API to apply the transformation
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const transformResult = await new Promise<any>((resolve, reject) => {
         const timeout = setTimeout(() => {
           reject(new Error('Transformation timeout after 60 seconds'));

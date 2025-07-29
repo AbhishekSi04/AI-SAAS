@@ -230,7 +230,7 @@ export default function ImageGeneratorPage() {
               {/* Prompt Display */}
               <div className="mt-6 p-4 bg-white/5 rounded-xl">
                 <h3 className="text-sm font-semibold text-gray-300 mb-2">Generated from prompt:</h3>
-                <p className="text-white italic">"{prompt}"</p>
+                <p className="text-white italic">{prompt}</p>
               </div>
             </div>
           )}

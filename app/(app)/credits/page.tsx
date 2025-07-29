@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/nextjs';
-import { CreditCard, ShoppingCart, Gift, Zap, Star, Crown, Sparkles, Check, ArrowRight, History, Wallet } from 'lucide-react';
+import {  Zap, Star, Crown,ArrowRight, Wallet } from 'lucide-react';
 import { CreditLog } from '@/types';
 import { Button } from '@/components/ui/button';
 

@@ -79,10 +79,6 @@ export default function AppLayout({
     createUserInDB();
   }, [user, isLoaded]);
 
-  const handleLogoClick = () => {
-    router.push("/");
-  };
-
   const handleSignOut = async () => {
     await signOut();
   };

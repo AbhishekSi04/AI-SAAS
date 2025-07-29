@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Menu, X, Sparkles, Zap, Shield, Mail, User, MessageCircle, Phone, MapPin, Clock, Star, Heart } from "lucide-react";
+import { ArrowRight, Menu, X, Sparkles, Zap, Shield, Mail, User, MessageCircle, Phone, Clock, Star, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function ContactPage() {
@@ -73,7 +73,7 @@ export default function ContactPage() {
           Contact Our <span className="block mt-2">Expert Team</span>
         </h1>
         <p className="text-xl md:text-2xl text-white mb-12 max-w-2xl mx-auto leading-relaxed">
-          Have questions about our API? Need custom solutions? We're here to help you transform your creative vision.
+          Have questions about our API? Need custom solutions? We are here to help you transform your creative vision.
         </p>
       </section>
 
@@ -83,8 +83,8 @@ export default function ContactPage() {
           {/* Contact Information */}
           <div className="space-y-8">
             <div>
-              <h2 className="text-3xl font-bold mb-6 text-white">Let's Start a <span className="gradient-text">Conversation</span></h2>
-              <p className="text-xl text-gray-300 mb-8">We're excited to learn about your project and help you achieve your goals with our AI-powered media processing platform.</p>
+              <h2 className="text-3xl font-bold mb-6 text-white">Let Start a <span className="gradient-text">Conversation</span></h2>
+              <p className="text-xl text-gray-300 mb-8">We are excited to learn about your project and help you achieve your goals with our AI-powered media processing platform.</p>
             </div>
             
             <div className="grid gap-6">
@@ -116,7 +116,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-white mb-2">Support Hours</h3>
-                  <p className="text-gray-300 mb-2">We're available when you need us</p>
+                  <p className="text-gray-300 mb-2">We are available when you need us</p>
                   <p className="text-purple-400">24/7 for Enterprise customers</p>
                   <p className="text-gray-300">Mon-Fri 9AM-6PM PST for others</p>
                 </div>
@@ -128,7 +128,7 @@ export default function ContactPage() {
           <div className="bg-[#23272f] border border-white/10 rounded-2xl p-8 shadow-xl">
             <div className="mb-8">
               <h3 className="text-2xl font-bold text-white mb-4">Send us a Message</h3>
-              <p className="text-gray-300">Fill out the form below and we'll get back to you within 24 hours.</p>
+              <p className="text-gray-300">Fill out the form below and we will get back to you within 24 hours.</p>
             </div>
 
             <form className="space-y-6">
