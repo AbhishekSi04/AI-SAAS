@@ -47,10 +47,11 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ received: true });
   } catch (error) {
-    console.error('Webhook error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    console.error('Webhook error:', errorMessage);
     return NextResponse.json({ 
       error: 'Webhook handler failed',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: errorMessage
     }, { status: 500 });
   }
 }
@@ -92,6 +93,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 
     console.log(`Successfully added ${creditsAmount} credits to user ${user.id}`);
   } catch (error) {
-    console.error('Error processing checkout session:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    console.error('Error processing checkout session:', errorMessage);
   }
 } 

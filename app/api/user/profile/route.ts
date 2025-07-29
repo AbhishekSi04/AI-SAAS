@@ -32,7 +32,8 @@ export async function GET() {
       creditLogs: userData.creditLogs
     });
   } catch (error) {
-    console.error('Error fetching user profile:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    console.error('Error fetching user profile:', errorMessage);
     return NextResponse.json({ error: "Failed to fetch user profile" }, { status: 500 });
   }
 } 

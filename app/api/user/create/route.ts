@@ -35,13 +35,12 @@ export async function POST() {
   } catch (error) {
     // Handle null/undefined errors properly
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-    const errorStack = error instanceof Error ? error.stack : 'No stack trace available';
     
-    console.error('Error creating user:', {
-      message: errorMessage,
-      stack: errorStack,
-      error: error || 'Error was null or undefined'
-    });
+    // Safe error logging to avoid Node.js assertion errors
+    console.error('Error creating user:', errorMessage);
+    if (error instanceof Error && error.stack) {
+      console.error('Stack trace:', error.stack);
+    }
     
     return NextResponse.json({ 
       error: "Failed to create user",

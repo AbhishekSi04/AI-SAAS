@@ -175,18 +175,11 @@ export default function Home() {
           <Button
             className="text-lg px-5 py-3 font-semibold bg-gradient-to-r from-[#36c6f0] to-[#8f6ed5] hover:from-[#2bb3e6] hover:to-[#7a5fc2] text-white rounded-md border-none shadow-md transition-colors duration-200"
             size="lg"
-            onClick={() => {}}
+            onClick={() => {router.push("/sign-up")}}
           >
             Start Creating Free <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
-          <Button
-            className="text-lg px-5 py-3 font-semibold text-white rounded-md border-2 border-transparent bg-gradient-to-r from-[#36c6f0] to-[#8f6ed5] bg-clip-border hover:from-[#2bb3e6] hover:to-[#7a5fc2] shadow-md transition-colors duration-200"
-            style={{ background: 'none', borderImage: 'linear-gradient(to right, #36c6f0, #8f6ed5) 1' }}
-            size="lg"
-            onClick={() => {}}
-          >
-            View API Docs
-          </Button>
+
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-2xl mx-auto">
           <div className="text-center">

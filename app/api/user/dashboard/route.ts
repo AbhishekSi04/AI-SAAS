@@ -45,7 +45,8 @@ export async function GET() {
       }
     });
   } catch (error) {
-    console.error('Error fetching dashboard data:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    console.error('Error fetching dashboard data:', errorMessage);
     return NextResponse.json({ error: "Failed to fetch dashboard data" }, { status: 500 });
   }
 } 

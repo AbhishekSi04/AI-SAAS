@@ -23,7 +23,8 @@ export async function GET() {
       creditHistory
     });
   } catch (error) {
-    console.error('Error fetching credit data:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    console.error('Error fetching credit data:', errorMessage);
     return NextResponse.json({ error: "Failed to fetch credit data" }, { status: 500 });
   }
 } 
