@@ -48,10 +48,11 @@ export default function AppLayout({
   // Create user in database when they sign in
   useEffect(() => {
     console.log('useEffect triggered, user:', user, 'isLoaded:', isLoaded);
-    console.log(newUser);
+    console.log('Current newUser state:', newUser);
     
     const createUserInDB = async () => {
-      if (isLoaded && user) {
+      // Only proceed if user is loaded, exists, and we haven't already created/fetched the user
+      if (isLoaded && user && !newUser) {
         console.log('Creating user in DB:', user.id);
         try {
           const response = await fetch('/api/user/create', {
@@ -66,18 +67,19 @@ export default function AppLayout({
             console.log('User created/retrieved:', data.user);
             setFullUser(data.user);
           } else {
-            console.error('Failed to create user:', response.status);
+            const errorText = await response.text();
+            console.error('Failed to create user:', response.status, errorText);
           }
         } catch (error) {
           console.error('Error creating user:', error);
         }
       } else {
-        console.log('No user available yet or not loaded');
+        console.log('Skipping user creation - isLoaded:', isLoaded, 'user exists:', !!user, 'newUser exists:', !!newUser);
       }
     };
 
     createUserInDB();
-  }, [user, isLoaded]);
+  }, [user, isLoaded, newUser]);
 
   const handleSignOut = async () => {
     await signOut();

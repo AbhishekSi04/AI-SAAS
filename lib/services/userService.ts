@@ -22,29 +22,69 @@ export class UserService {
   static async createOrGetUser(userData: CreateUserData): Promise<User> {
     console.log('UserService.createOrGetUser called with:', userData);
     
-    const existingUser = await prisma.user.findUnique({
+    // First check by clerkId
+    let existingUser = await prisma.user.findUnique({
       where: { clerkId: userData.clerkId }
     });
 
     if (existingUser) {
-      console.log('Existing user found:', existingUser.id);
+      console.log('Existing user found by clerkId:', existingUser.id);
       return existingUser;
     }
 
-    console.log('Creating new user...');
-    const newUser = await prisma.user.create({
-      data: {
-        clerkId: userData.clerkId,
-        email: userData.email,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        avatar: userData.avatar,
-        credits: 10 // Give new users 10 free credits
-      }
+    // Check by email to handle potential duplicates
+    existingUser = await prisma.user.findUnique({
+      where: { email: userData.email }
     });
-    
-    console.log('New user created:', newUser.id);
-    return newUser;
+
+    if (existingUser) {
+      console.log('Existing user found by email, updating clerkId:', existingUser.id);
+      // Update the existing user with the new clerkId
+      const updatedUser = await prisma.user.update({
+        where: { id: existingUser.id },
+        data: {
+          clerkId: userData.clerkId,
+          firstName: userData.firstName || existingUser.firstName,
+          lastName: userData.lastName || existingUser.lastName,
+          avatar: userData.avatar || existingUser.avatar
+        }
+      });
+      return updatedUser;
+    }
+
+    console.log('Creating new user...');
+    try {
+      const newUser = await prisma.user.create({
+        data: {
+          clerkId: userData.clerkId,
+          email: userData.email,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          avatar: userData.avatar,
+          credits: 10 // Give new users 10 free credits
+        }
+      });
+      
+      console.log('New user created:', newUser.id);
+      return newUser;
+    } catch (error: any) {
+      // Handle race condition - another request might have created the user
+      if (error.code === 'P2002') {
+        console.log('Race condition detected, fetching existing user...');
+        const raceUser = await prisma.user.findFirst({
+          where: {
+            OR: [
+              { clerkId: userData.clerkId },
+              { email: userData.email }
+            ]
+          }
+        });
+        if (raceUser) {
+          return raceUser;
+        }
+      }
+      throw error;
+    }
   }
 
   // Get user by Clerk ID
